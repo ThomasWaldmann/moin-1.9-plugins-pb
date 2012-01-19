@@ -1,12 +1,17 @@
 #format python
 """
-MoinMoin parser: 'if'.
+MoinMoin plugin: 'if' parser.
 
-This parser allows to display blocks conditionally.
+Conditional display. The condition can be based on the user name
+(or whether the user is logged in or not), the action, the user's
+group membership, and the form (URL GET query string or POST form).
+
+$Revision: 199 $
+$Id: if.py 199 2010-09-18 22:55:11Z pascal $
 
 -------------------------------------------------------------------------------
 
-Copyright (C) 2005-2008  Pascal Bauermeister <pascal.bauermeister@gmail.com>
+Copyright (C) 2005-2009  Pascal Bauermeister <pascal.bauermeister@gmail.com>
 
 This module is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -32,9 +37,12 @@ Where:
     action
       string giving the page's action.
 
-    is_member (group)
+    is_member("group")
       function returning 1 if the user is member of the given group, 0
-      otherwise.
+      otherwise. DO NOT FORGET TO USE QUOTES.
+
+    form  ***Broken on MoinMoin 1.9+***
+      dictionary representing the request's form.
 
   When EXPRESSION is omitted, this help is displayed.
 
@@ -67,6 +75,10 @@ Sample 2: area restricted to members of a certain groups
 -------------------------------------------------------------------------------
 
 ChangeLog:
+
+Pascal Bauermeister <pascal DOT bauermeister AT gmail DOT com> 2010-09-18
+  * is_member() made compatible for MoinMoin 1.9 and above (thanks to
+    Ian Riley for reporting the issue)
 
 Pascal Bauermeister <pascal DOT bauermeister AT gmail DOT com> 2009-01-09
   * Compatibility for MoinMoin 1.7 and above
@@ -121,14 +133,20 @@ class Parser:
 
     def _evaluate(self, expr):
         def is_member(group):
-            return self.request.dicts.has_member(group, self.request.user.name)
+            try:
+                # before MM 1.9
+                return self.request.dicts.has_member(group, self.request.user.name)
+            except:
+                # MM 1.9+
+                return group in self.request.groups.groups_with_member(self.request.user.name)
 
         user_name = self.request.user.name
 
-        if self.request.form.has_key('action'):
-            action = self.request.form['action'][0]
-        else:
-            action = ""
+        try: # MM 1.9+
+            action = request.action
+        except: # MM before 1.9
+            if self.request.form.has_key('action'): action = self.request.form['action'][0]
+            else: action = ""
 
         try:
             val = eval(expr,

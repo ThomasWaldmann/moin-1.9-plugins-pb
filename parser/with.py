@@ -1,23 +1,24 @@
 #format python
-
 """
-MoinMoin parser: 'with'
+MoinMoin plugin: 'with' parser.
 
-This parser allows to prepend and append wiki text defined in another
-wiki page (which we call the 'resource'), and additionally to define
-and apply C-like macros (#define).
+Preprocessor providing #define macros, like in the C language. Another
+wiki page can be used as macro definition library.
 
-The goal is to keep wiki text simple, by defining enclosing overhead
-in a separate resource page. It is especially useful when wiki blocks
-have identical such overhead. The resource is also a good place to
-define macros.
+The goal is to help keep wiki text simple, by defining enclosing
+overhead once in a separate page (called 'resource'), and using it as
+much as wanted. The resource can be used to hold the overhead and the
+macro definitions.
 
 This is a rewrite of the 'using' parser, this time using the external
 program 'gpp' as preprocessoer, instead of python regex-based code.
 
+$Revision: 184 $
+$Id: with.py 184 2009-11-23 19:12:15Z pascal $
+
 -------------------------------------------------------------------------------
 
-Copyright (C) 2008  Pascal Bauermeister <pascal.bauermeister@gmail.com>
+Copyright (C) 2008-2009  Pascal Bauermeister <pascal.bauermeister@gmail.com>
 
 This module is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

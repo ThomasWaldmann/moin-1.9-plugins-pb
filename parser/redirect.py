@@ -73,6 +73,7 @@ try {
 ###############################################################################
 
 from MoinMoin import wikiutil
+
 def _format (src_text, request):
     """Parse the text (in wiki source format) and make HTML, after
     diverting sys.stdout to a string"""
@@ -91,7 +92,6 @@ class Parser:
         self.raw = raw
         self.request = request
 
-
     def _usage(self, full = False):
         """Returns the interesting part of the module's doc"""
 
@@ -100,7 +100,6 @@ class Parser:
         else:
             rx = re.compile("--$(.*?)^--", re.DOTALL + re.MULTILINE)
             return rx.findall(__doc__)[0].strip()
-
 
     def format(self, formatter):
         """The parser's entry point"""
@@ -134,7 +133,6 @@ class Parser:
             """ % (NAME, self._usage(opt_help))))
             return
 
-
         # split and remove comments
         lines = [l.strip() for l in text.split('\n')]
         lines = [l for l in lines if l and not l.startswith("#")]
@@ -166,7 +164,7 @@ class Parser:
                     rx = re.compile(value)
                     if not rx.match(form[name]):
                         unmatched = True
-                        break;
+                        break
                 else:
                     unmatched = True
                     break
@@ -197,3 +195,4 @@ class Parser:
         self.request.write(formatter.rawHTML(html))
             
 #end
+

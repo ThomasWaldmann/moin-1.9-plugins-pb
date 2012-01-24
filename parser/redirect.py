@@ -139,7 +139,7 @@ class Parser:
         lines = [l.strip() for l in text.split('\n')]
         lines = [l for l in lines if l and not l.startswith("#")]
 
-        form = self.request.form
+        form = self.request.values  # we need stuff from querystring (values has qs + posted form data)
         rules = []
 
         # go
@@ -164,7 +164,7 @@ class Parser:
                     value = re.escape(value).replace(r'\*', '.*')
                     value = '^%s$' % value
                     rx = re.compile(value)
-                    if not rx.match(form[name][0]):
+                    if not rx.match(form[name]):
                         unmatched = True
                         break;
                 else:

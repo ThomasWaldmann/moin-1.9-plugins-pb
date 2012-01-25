@@ -319,12 +319,12 @@ class Parser:
         text = text0
 
         # append some HTTP form items to cmdline arguments
-        form = self.request.form
-        for (key, val) in form.items():
+        form = self.request.values # XXX needs checking (.values contains both http post values and qs url args)
+        for key in form:
             if key.startswith("define_") or \
                    key in ("show","debug","help"):
-                self.attrs[key] = '"%s"' % val[0]
-        action = form.get("action", ["show"])[0]
+                self.attrs[key] = '"%s"' % form[key]
+        action = form.get("action", "show")
         self.attrs["define___ACTION__"] = '"%s"' % action
 
         # parse bangpath for arguments
